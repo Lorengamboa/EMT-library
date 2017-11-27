@@ -13,9 +13,11 @@ const { bus_endpoints, geo_endpoints } = require('./config/endpoints');
  * @param {string} passKey - Password to validate the client autentification
  * @param {string} category - It can either be bus or geo
  */
-module.exports = function emtService(clientId, passKey, category) {
-    if (category === "bus") return new Bus(clientId, passKey, BUS);
-    if (category === "geo") return new Geo(clientId, passKey, GEO);
+module.exports = function emtService(clientId, passKey) {
+    return function (category) {
+        if (category === "bus") return new Bus(clientId, passKey, BUS);
+        if (category === "geo") return new Geo(clientId, passKey, GEO);
+    }
 }
 
 /**

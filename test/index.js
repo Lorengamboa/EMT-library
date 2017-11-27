@@ -6,12 +6,15 @@ var emt = require('../');
 require('dotenv').config();
 
 describe('EMT TDD', function () {
-
+    let EMT;
+    before(function () {
+        EMT = emt(process.env.CLIENT_ID, process.env.PASS_KEY);
+    });
     describe('Bus API method requests', function (done) {
         let bus;
 
         before(function () {
-            bus = emt(process.env.CLIENT_ID, process.env.PASS_KEY, 'bus');
+            bus = EMT('bus');
         });
 
         it('/getCalendar ', function (done) {

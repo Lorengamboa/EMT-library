@@ -23,10 +23,10 @@
 ## How to use
 
 **Import and authenticate against the API.**
->var EMT = require('emt-bus').(<'idClient>', <'passKey>');
+>var EMT = require('emt-bus')(<'idClient>', <'passKey>');
 
 **Select a an API category**
->var bus = EMT('bus);
+>var bus = EMT('bus');
 
 **Finally, make the request by selecting a method that corresponds to its category**
 >bus.getListLines({ Lines: '', SelectDate: '09/09/1993' }).then ..
