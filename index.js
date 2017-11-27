@@ -49,31 +49,32 @@ const Service = function (clientId, passKey, category) {
         return auth;
     }
 
-    this.makeRequest = function (endpoint, body) {
-        /*
-           Creates an object that will take all the <key, values>
-           taken from the body after iterating it and end up
-           embeding the cliendId and the password into it
-        */
-        for (var property in body) {
-            if (body.hasOwnProperty(property)) {
-                body.property = body.property;
-            }
-        }
-        Object.assign(body, this.glueAuth());
+}
 
-        return request({
-            'method': 'POST',
-            'uri': this.glueURL() + '/' + endpoint + '.php',
-            'form': body,
-            'gzip': true,
-            'strictSSL': false // Spain goverment sign their own SSL certificates, ಠ.ಠ
-        })
+Service.prototype.makeRequest = function (endpoint, body = {}) {
+    /*
+       Creates an object that will take all the <key, values>
+       taken from the body after iterating it and end up
+       embeding the cliendId and the password into it
+    */
+    for (var property in body) {
+        if (body.hasOwnProperty(property)) {
+            body.property = body.property;
+        }
+    }
+
+    Object.assign(body, this.glueAuth());
+
+    return request({
+        'method': 'POST',
+        'uri': this.glueURL() + '/' + endpoint + '.php',
+        'form': body,
+        'gzip': true,
+        'strictSSL': false // Spain's goverment signs their own SSL certificates, ಠ.ಠ
+    })
         .then(function (response) {
             return JSON.parse(response);
         });
-    }
-
 }
 
 /**
@@ -99,8 +100,8 @@ Bus.prototype.getCalendar = function (params) {
 /**
  * Returns every line type and their details
  */
-Bus.prototype.getGroups = function (params) {
-    return this.makeRequest(bus_endpoints.GET_GROUPS, params);
+Bus.prototype.getGroups = function () {
+    return this.makeRequest(bus_endpoints.GET_GROUPS);
 };
 /**
  * Returns lines with description and group
