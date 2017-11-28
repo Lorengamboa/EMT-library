@@ -4,7 +4,7 @@
   "description": "Library that works a layer over the emtmadrid bus service API",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha ./test"
   },
   "keywords": [
     "library",
@@ -21,6 +21,7 @@
     "mocha": "^4.0.1"
   },
   "dependencies": {
+    "dotenv": "^4.0.0",
     "request": "^2.83.0",
     "request-promise": "^4.2.2"
   }

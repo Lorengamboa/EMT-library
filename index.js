@@ -23,6 +23,7 @@ const {
  * @param {string} category - It can either be bus or geo
  */
 module.exports = function emtService(clientId, passKey) {
+
 	return function typeService(category) {
 		if (category === 'bus') return new Bus(clientId, passKey, BUS);
 		if (category === 'geo') return new Geo(clientId, passKey, GEO);
@@ -39,6 +40,7 @@ module.exports = function emtService(clientId, passKey) {
  * @param {string} category - It can either be bus or geo
  */
 const Service = function (clientId, passKey, category) {
+
 	var client = clientId; // private attribute
 	var pass = passKey; // private attribute
 	this.category = category;
@@ -90,7 +92,36 @@ const Service = function (clientId, passKey, category) {
  * @returns {promise} 
  */
 Service.prototype.makeRequest = function (endpoint, body) {
-	/*
+
+    var client = clientId; // private attribute
+    var pass = passKey; // private attribute
+    this.category = category;
+
+    this.getClient = function () {
+        return client;
+    }
+
+    this.getPassword = function () {
+        return pass;
+    }
+
+    this.glueURL = function () {
+        return SERVER_URL + this.category;
+    }
+
+    this.glueAuth = function () {
+        const auth = {};
+        auth['idClient'] = this.getClient();
+        auth['passKey'] = this.getPassword();
+
+        return auth;
+    }
+
+}
+
+Service.prototype.makeRequest = function (endpoint, body = {}) {
+    /*
+>>>>>>> 35b3c20f5140c788a1bae8697c52a545a1fdace9
        Creates an object that will take all the <key, values>
        taken from the body after iterating it and end up
        embeding the cliendId and the password into it
@@ -139,7 +170,7 @@ Bus.prototype.getCalendar = function (params) {
  */
 Bus.prototype.getGroups = function (params) {
 	return this.makeRequest(bus_endpoints.GET_GROUPS, params);
-};
+
 /**
  * Returns lines with description and group
  */
