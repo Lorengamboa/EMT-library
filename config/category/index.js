@@ -4,3 +4,6 @@ exports.BUS = 'bus';
 
 exports.GEO = 'geo';
 
+exports.MULTIMEDIA = 'media';
+
+
