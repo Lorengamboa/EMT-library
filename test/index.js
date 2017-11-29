@@ -17,67 +17,59 @@ describe('EMT TDD', function () {
             bus = EMT('bus');
         });
 
-        it('/getCalendar ', function (done) {
-            bus.getCalendar({ SelectDateBegin: '09/09/2016', SelectDateEnd: '09/09/2017' })
+        it('/getCalendar', function () {
+            return bus.getCalendar('09/09/2016','09/09/2017')
                 .then(function (res) {
                     assert.equal(res['resultDescription'], "Resultado de la operacion Correcta");
-                    done();
                 });
         });
 
-        it('/getGroups ', function (done) {
-            bus.getGroups()
+        it('/getGroups ', function () {
+            return bus.getGroups()
                 .then(function (res) {
                     assert.equal(res['resultDescription'], "Resultado de la operacion Correcta");
-                    done();
                 });
         });
 
-        it('/getListLines ', function (done) {
-            bus.getListLines({ SelectDate: '09/09/2016', Lines: '121' })
+        it('/getListLines ', function () {
+            return bus.getListLines('09/09/2016', '121')
                 .then(function (res) {
                     assert.equal(res['resultDescription'], "Resultado de la operacion Correcta");
-                    done();
                 });
         });
 
-        it('/getNodesLines ', function (done) {
-            bus.getNodesLines({ Nodes: '111' })
+        it('/getNodesLines ', function () {
+            return bus.getNodesLines('111')
                 .then(function (res) {
                     assert.equal(res['resultDescription'], "Resultado de la operacion Correcta");
-                    done();
                 });
         });
 
-        it('/getRouteLines ', function (done) {
-            bus.getRouteLines({ SelectDate: '09/09/2015', Lines: '123' })
+        it('/getRouteLines', function () {
+            return bus.getRouteLines('09/09/2017', '121')
                 .then(function (res) {
                     assert.equal(res['resultDescription'], "Resultado de la operacion Correcta");
-                    done();
                 });
         });
 
-        it('/getRouteLinesRoute ', function (done) {
-            bus.getRouteLinesRoute({ SelectDate: '09/09/2015', Lines: '123' })
+        it('/getRouteLinesRoute', function () {
+            return bus.getRouteLinesRoute('09/09/2015', '123')
                 .then(function (res) {
                     assert.equal(res['resultDescription'], "Resultado de la operacion Correcta");
-                    done();
                 });
         });
 
-        it('/getTimeTableLines ', function (done) {
-            bus.getTimeTableLines({ SelectDate: '09/09/2015', Lines: '123' })
+        it('/getTimeTableLines ', function () {
+            return bus.getTimeTableLines('09/09/2016', '121')
                 .then(function (res) {
                     assert.equal(res['resultDescription'], "Resultado de la operacion Correcta");
-                    done();
                 });
         });
 
-        it('/getTimesLines ', function (done) {
-            bus.getTimesLines({ SelectDate: '09/09/2015', Lines: '123' })
+        it('/getTimesLines ', function () {
+            return bus.getTimesLines('09/09/2016', '121')
                 .then(function (res) {
                     assert.equal(res['resultDescription'], "Resultado de la operacion Correcta");
-                    done();
                 });
         });
 

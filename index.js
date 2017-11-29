@@ -2,7 +2,9 @@
 
 const request = require('request-promise');
 const {
-	BUS_DOMAIN
+	BUS_DOMAIN,
+	BIKE_DOMAIN,
+	PARKING_DOMAIN
 } = require('./config/url');
 const {
 	BUS,
@@ -89,17 +91,12 @@ const Service = function (clientId, passKey, category) {
  * @param {object} body The data that will be sent to the ws 
  * @returns {promise} 
  */
-Service.prototype.makeRequest = function (endpoint, body) {
+Service.prototype.makeRequest = function (endpoint, body = {}) {
 	/*
-       Creates an object that will take all the <key, values>
-       taken from the body after iterating it and end up
-       embeding the cliendId and the password into it
+	   Creates an object that will embed 
+	   the cliendId and the password into 
+	   itself
     */
-	for (var property in body) {
-		if (body.hasOwnProperty(property)) {
-			body.property = body.property;
-		}
-	}
 	Object.assign(body, this.glueAuth());
 
 	return request({
@@ -130,53 +127,81 @@ Bus.prototype = Object.create(Service.prototype); // inherits from service class
 
 /**
  * Get EMT Calendar for all days and line schedules for a range of dates
+ * @param {string} SelectDateBegin
+ * @param {string} SelectDateEnd
+ * @returns {promise}
  */
-Bus.prototype.getCalendar = function (params) {
-	return this.makeRequest(bus_endpoints.GET_CALENDAR, params);
+Bus.prototype.getCalendar = function (SelectDateBegin,SelectDateEnd) {
+	const body = {SelectDateBegin, SelectDateEnd}
+	return this.makeRequest(bus_endpoints.GET_CALENDAR, body);
 };
 /**
  * Returns every line type and their details
+ * @returns {promise}
  */
-Bus.prototype.getGroups = function (params) {
-	return this.makeRequest(bus_endpoints.GET_GROUPS, params);
+Bus.prototype.getGroups = function () {
+	return this.makeRequest(bus_endpoints.GET_GROUPS);
 };
 /**
  * Returns lines with description and group
+ * @param {string} SelectDate
+ * @param {string} Lines
+ * @returns {promise}
  */
-Bus.prototype.getListLines = function (params) {
-	return this.makeRequest(bus_endpoints.GET_LIST_LINES, params);
+Bus.prototype.getListLines = function (SelectDate, Lines) {
+	const body = {SelectDate, Lines}
+	return this.makeRequest(bus_endpoints.GET_LIST_LINES, body);
 };
 /**
  * Returns all stop identifiers and his coordinate, name, 
  * lines and directions
+ * @param {string} Nodes
+ * @returns {promise}
  */
-Bus.prototype.getNodesLines = function (params) {
-	return this.makeRequest(bus_endpoints.GET_NODES_LINES, params);
+Bus.prototype.getNodesLines = function (Nodes) {
+	const body = {Nodes};
+	return this.makeRequest(bus_endpoints.GET_NODES_LINES, body);
 };
 /**
  * Returns a line/s route with the vertex info to build the route and 
  * coordinates for stops and axes
+ * @param {string} SelectDate
+ * @param {string} Lines
+ * @returns {promise}
  */
-Bus.prototype.getRouteLines = function (params) {
-	return this.makeRequest(bus_endpoints.GET_ROUTE_LINES, params);
+Bus.prototype.getRouteLines = function (SelectDate, Lines) {
+	const body = {SelectDate, Lines};
+	return this.makeRequest(bus_endpoints.GET_ROUTE_LINES, body);
 };
 /**
  * Get line route with vertex info to build map and coordinates for Stops
+ * @param {string} SelectDate
+ * @param {string} Lines
+ * @returns {promise}
  */
-Bus.prototype.getRouteLinesRoute = function (params) {
-	return this.makeRequest(bus_endpoints.GET_ROUTE_LINES_ROUTE, params);
+Bus.prototype.getRouteLinesRoute = function (SelectDate, Lines) {
+	const body = {SelectDate, Lines}
+	return this.makeRequest(bus_endpoints.GET_ROUTE_LINES_ROUTE, body);
 };
 /**
  * Provices information about the requested line at travel details
+ * @param {string} SelectDate
+ * @param {string} Lines
+ * @returns {promise}
  */
-Bus.prototype.getTimeTableLines = function (params) {
-	return this.makeRequest(bus_endpoints.GET_TIME_TABLE_LINES, params);
+Bus.prototype.getTimeTableLines = function (SelectDate, Lines) {
+	const body = {SelectDate, Lines}
+	return this.makeRequest(bus_endpoints.GET_TIME_TABLE_LINES, body);
 };
 /**
  * Returns current schedules for the requested lines
+ * @param {string} SelectDate
+ * @param {string} Lines
+ * @returns {promise}
  */
-Bus.prototype.getTimesLines = function (params) {
-	return this.makeRequest(bus_endpoints.GET_TIMES_LINES, params);
+Bus.prototype.getTimesLines = function (SelectDate, Lines) {
+	const body = {SelectDate, Lines}
+	return this.makeRequest(bus_endpoints.GET_TIMES_LINES, body);
 };
 
 /**

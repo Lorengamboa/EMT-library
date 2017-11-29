@@ -36,11 +36,12 @@ var bus = EMT('bus');
 ```
 **Finally, make the request by selecting a method that corresponds to its category**
 ```javascript
-bus.getListLines({ Lines: '', SelectDate: '09/09/1993' }).then ..
+bus.getListLines({ Lines: '721', SelectDate: '09/09/1993' }).then ..
 ```
 
 **Response**
-<code></code>
+<code>
+</code>
 
 ### Bus Methods 🚌
 

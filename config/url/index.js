@@ -1,7 +1,7 @@
 'use strict';
 
-const BUS_DOMAIN = require('./bus_url');
-const BIKE_DOMAIN = require('./bike_url');
-const PARKING_DOMAIN = require('./parking_url');
+exports.BUS_DOMAIN = 'https://openbus.emtmadrid.es:9443/emt-proxy-server/last/';
 
-module.exports = { BUS_DOMAIN, BIKE_DOMAIN, PARKING_DOMAIN };
+exports.BIKE_DOMAIN = 'https://rbdata.emtmadrid.es:8443/BiciMad';
+
+exports.PARKING_DOMAIN = 'https://servicios.emtmadrid.es:8443/InfoParking/InfoParking.svc';
