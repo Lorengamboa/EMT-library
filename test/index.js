@@ -10,7 +10,7 @@ describe('EMT TDD', function () {
     before(function () {
         EMT = emt(process.env.CLIENT_ID, process.env.PASS_KEY);
     });
-    describe('Bus API method requests', function (done) {
+    describe('Bus API service', function (done) {
         let bus;
 
         before(function () {
@@ -75,4 +75,19 @@ describe('EMT TDD', function () {
 
     });
 
+    describe('Bike API service', function (done) {
+        let bike;
+
+        before(function () {
+            bike = EMT('bike');
+        });
+
+        it('/getStations', function () {
+            return bike.getStations('09/09/2016','09/09/2017')
+                .then(function (res) {
+                    console.log(res);
+                    assert.equal(res["code"], "0");
+                });
+        });
+    });
 });

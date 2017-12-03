@@ -9,12 +9,14 @@ const {
 const {
 	BUS,
 	GEO,
-	MULTIMEDIA
+	MULTIMEDIA,
+	BIKE
 } = require('./config/category');
 const {
 	bus_endpoints,
 	geo_endpoints,
-	media_endpoints
+	media_endpoints,
+	bike_endpoints
 } = require('./config/endpoints');
 
 /**
@@ -25,12 +27,12 @@ const {
  * @param {string} category - It can either be bus or geo
  */
 module.exports = function emtService(clientId, passKey) {
-	return function typeService(category) {
-		if (category === 'bus') return new Bus(clientId, passKey, BUS);
-		if (category === 'geo') return new Geo(clientId, passKey, GEO);
-		if (category === 'media') return new Geo(clientId, passKey, MULTIMEDIA);
-		if (category === 'bike') return;
-		if (category === 'parking') return;
+	return function typeService(service) {
+		if (service === 'bus') return new Bus(clientId, passKey, BUS, 'POST');
+		if (service === 'geo') return new Geo(clientId, passKey, GEO, 'POST');
+		if (service === 'media') return new Media(clientId, passKey, MULTIMEDIA, 'POST');
+		if (service === 'bike') return new Bike(clientId, passKey, BIKE, 'GET');
+		if (service === 'parking') return;
 	};
 };
 
@@ -38,12 +40,11 @@ module.exports = function emtService(clientId, passKey) {
  * Superclass Service that holds the common features across the different service requests
  * @param {string} clientId - Client username to identify with
  * @param {string} passKey - Password to validate the client autentification
- * @param {string} category - It can either be bus or geo
  */
-const Service = function (clientId, passKey, category) {
+const Service = function (clientId, passKey, rest_method) {
 	var client = clientId; // private attribute
 	var pass = passKey; // private attribute
-	this.category = category;
+	this.rest_method = rest_method;
 
 	/** 
 	 * Getters & Setters
@@ -66,20 +67,24 @@ const Service = function (clientId, passKey, category) {
 	/**
 	 * Forms the entire domain for the desired request
 	 */
-	this.glueURL = function () {
-		return BUS_DOMAIN + this.category;
+	this.glueURL = function (endpoint, params) {
+		if (this.category !== BIKE) return `${BUS_DOMAIN}${this.category}/${endpoint}.php`;
+
+		return `${BIKE_DOMAIN}/${endpoint}/${this.getClient()}/${this.getPassword()}}`;
 	};
 	/**
 	 * Forms the authentication credentials so it can be added to
-	 * the body of the request and so, the user can succesfully 
+	 * the request body, therefore the user can succesfully 
 	 * have permission to it.
 	 */
-	this.glueAuth = function () {
+	this.glueBody = function (params) {
+		if (this.category === BIKE) return;
 		const auth = {};
 		auth['idClient'] = this.getClient();
 		auth['passKey'] = this.getPassword();
 
-		return auth;
+		Object.assign(params, auth);
+		return params;
 	};
 
 };
@@ -91,24 +96,21 @@ const Service = function (clientId, passKey, category) {
  * @param {object} body The data that will be sent to the ws 
  * @returns {promise} 
  */
-Service.prototype.makeRequest = function (endpoint, body = {}) {
-	/*
-	   Creates an object that will embed 
-	   the cliendId and the password into 
-	   itself
-    */
-	Object.assign(body, this.glueAuth());
+Service.prototype.makeRequest = function (endpoint, params = {}) {
+
+	const url = this.glueURL(endpoint, params);
+	const body = this.glueBody(params);
 
 	return request({
-		'method': 'POST',
-		'uri': this.glueURL() + '/' + endpoint + '.php',
+		'method': this.rest_method,
+		'uri': url,
 		'form': body,
 		'gzip': true,
 		'strictSSL': false // Spain goverment sign their own SSL certificates, ಠ.ಠ
 	})
-		.then(function (response) {
-			return JSON.parse(response);
-		});
+	.then(response => {
+		return JSON.parse(response);
+	});
 };
 
 /**
@@ -119,8 +121,9 @@ Service.prototype.makeRequest = function (endpoint, body = {}) {
  * @param {string} passKey - password to validate the client autentification
  * @param {string} category - It can either be bus or geo
  */
-const Bus = function (clientId, passKey, category) {
-	Service.call(this, clientId, passKey, category);
+const Bus = function (clientId, passKey, category, rest_method) {
+	Service.call(this, clientId, passKey, rest_method);
+	this.category = category;
 };
 
 Bus.prototype = Object.create(Service.prototype); // inherits from service class
@@ -131,8 +134,8 @@ Bus.prototype = Object.create(Service.prototype); // inherits from service class
  * @param {string} SelectDateEnd
  * @returns {promise}
  */
-Bus.prototype.getCalendar = function (SelectDateBegin,SelectDateEnd) {
-	const body = {SelectDateBegin, SelectDateEnd}
+Bus.prototype.getCalendar = function (SelectDateBegin, SelectDateEnd) {
+	const body = { SelectDateBegin, SelectDateEnd }
 	return this.makeRequest(bus_endpoints.GET_CALENDAR, body);
 };
 /**
@@ -149,7 +152,7 @@ Bus.prototype.getGroups = function () {
  * @returns {promise}
  */
 Bus.prototype.getListLines = function (SelectDate, Lines) {
-	const body = {SelectDate, Lines}
+	const body = { SelectDate, Lines }
 	return this.makeRequest(bus_endpoints.GET_LIST_LINES, body);
 };
 /**
@@ -159,7 +162,7 @@ Bus.prototype.getListLines = function (SelectDate, Lines) {
  * @returns {promise}
  */
 Bus.prototype.getNodesLines = function (Nodes) {
-	const body = {Nodes};
+	const body = { Nodes };
 	return this.makeRequest(bus_endpoints.GET_NODES_LINES, body);
 };
 /**
@@ -170,7 +173,7 @@ Bus.prototype.getNodesLines = function (Nodes) {
  * @returns {promise}
  */
 Bus.prototype.getRouteLines = function (SelectDate, Lines) {
-	const body = {SelectDate, Lines};
+	const body = { SelectDate, Lines };
 	return this.makeRequest(bus_endpoints.GET_ROUTE_LINES, body);
 };
 /**
@@ -180,7 +183,7 @@ Bus.prototype.getRouteLines = function (SelectDate, Lines) {
  * @returns {promise}
  */
 Bus.prototype.getRouteLinesRoute = function (SelectDate, Lines) {
-	const body = {SelectDate, Lines}
+	const body = { SelectDate, Lines }
 	return this.makeRequest(bus_endpoints.GET_ROUTE_LINES_ROUTE, body);
 };
 /**
@@ -190,7 +193,7 @@ Bus.prototype.getRouteLinesRoute = function (SelectDate, Lines) {
  * @returns {promise}
  */
 Bus.prototype.getTimeTableLines = function (SelectDate, Lines) {
-	const body = {SelectDate, Lines}
+	const body = { SelectDate, Lines }
 	return this.makeRequest(bus_endpoints.GET_TIME_TABLE_LINES, body);
 };
 /**
@@ -200,7 +203,7 @@ Bus.prototype.getTimeTableLines = function (SelectDate, Lines) {
  * @returns {promise}
  */
 Bus.prototype.getTimesLines = function (SelectDate, Lines) {
-	const body = {SelectDate, Lines}
+	const body = { SelectDate, Lines }
 	return this.makeRequest(bus_endpoints.GET_TIMES_LINES, body);
 };
 
@@ -212,8 +215,9 @@ Bus.prototype.getTimesLines = function (SelectDate, Lines) {
  * @param {string} passKey - password to validate the client autentification
  * @param {string} category - It can either be bus or geo
  */
-const Geo = function (clientId, passKey, category) {
-	Service.call(this, clientId, passKey, category);
+const Geo = function (clientId, passKey, category, rest_method) {
+	Service.call(this, clientId, passKey, rest_method);
+	this.category = category;
 };
 
 Geo.prototype = Object.create(Service.prototype); // inherits from service class
@@ -293,34 +297,79 @@ Geo.prototype.getStreetFromXY = function (params) {
  * @param {string} passKey - password to validate the client autentification
  * @param {string} category - It can either be bus or geo
  */
-const Multimedia = function (clientId, passKey, category) {
-	Service.call(this, clientId, passKey, category);
+const Multimedia = function (clientId, passKey, category, rest_method) {
+	Service.call(this, clientId, passKey, rest_method);
+	this.category = category;
 };
 
 Multimedia.prototype = Object.create(Service.prototype); // inherits from service class
 
-Multimedia.prototype.getEstimatesIncident = function (params) {
-	return this.makeRequest(media_endpoints.getEstimatesIncident, params);
-};
-
+/**
+ * Get estimate arrival time to stop and its related issues
+ */
 Multimedia.prototype.getEstimatesIncident = function (params) {
 	return this.makeRequest(media_endpoints.GET_ESTIMATES_INCIDENT, params);
 };
+/**
+ * Request up to three optimal routes from one place to another using bus or walking,
+ * source and destination must be in a format known for the system, which means that 
+ * should have been validated by a GetStreet call
+ */
+Multimedia.prototype.GetStreetRoute = function (params) {
+	return this.makeRequest(media_endpoints.GET_STREET_ROUTE, params);
+};
 
+/**
+ * 
+ */
 Multimedia.prototype.getRouteWithAlarm = function (params) {
 	return this.makeRequest(media_endpoints.GET_ROUTE_WITH_ALARM, params);
 };
-
+/**
+ * 
+ */
 Multimedia.prototype.getRouteWithAlarmResponse = function (params) {
 	return this.makeRequest(media_endpoints.GET_ROUTE_WITH_ALARM_RESPONSE, params);
 };
-
+/**
+ * 
+ */
 Multimedia.prototype.getRoute = function (params) {
 	return this.makeRequest(media_endpoints.GET_ROUTE, params);
 };
-
+/**
+ * 
+ */
 Multimedia.prototype.getRouteResponse = function (params) {
 	return this.makeRequest(media_endpoints.GET_ROUTE_RESPONSE, params);
+};
+
+/**
+ * Set of services that let's know the actual state and availability 
+ * for all the bikes located in Madrid
+ * 
+ * @param {string} clientId - client username to identify with
+ * @param {string} passKey - password to validate the client autentification
+ */
+const Bike = function (clientId, passKey, category, rest_method) {
+	Service.call(this, clientId, passKey, rest_method);
+	this.category = category;
+};
+
+Bike.prototype = Object.create(Service.prototype); // inherits from service class
+
+/**
+ * Obtiene la relación de todas las bases de Bicimad y su estado
+ * operacional.
+ */
+Bike.prototype.getStations = function () {
+	return this.makeRequest(bike_endpoints.GET_STATIONS);
+};
+/**
+ * Obtiene la información de una base.
+ */
+Bike.prototype.getSingleStations = function (baseId) {
+	return this.makeRequest(bike_endpoints.GET_SINGLE_STATION, baseId);
 };
 
 // Posible ws code responses

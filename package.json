@@ -1,6 +1,6 @@
 {
   "name": "emt-bus",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Library that works a layer over the emtmadrid bus service API",
   "main": "index.js",
   "scripts": {
