@@ -18,7 +18,7 @@ describe('EMT TDD', function () {
         });
 
         it('/getCalendar', function () {
-            return bus.getCalendar('09/09/2016','09/09/2017')
+            return bus.getCalendar('09/09/2016', '09/09/2017')
                 .then(function (res) {
                     assert.equal(res['resultDescription'], "Resultado de la operacion Correcta");
                 });
@@ -83,11 +83,18 @@ describe('EMT TDD', function () {
         });
 
         it('/getStations', function () {
-            return bike.getStations('09/09/2016','09/09/2017')
+            return bike.getStations()
                 .then(function (res) {
-                    console.log(res);
                     assert.equal(res["code"], "0");
                 });
         });
+
+        it('/getSingleStations', function () {
+            return bike.getSingleStations("1")
+                .then(function (res) {
+                    assert.equal(res["code"], "0");
+                });
+        });
+
     });
 });

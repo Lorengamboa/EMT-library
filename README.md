@@ -1,4 +1,4 @@
-# EMT-bus
+# EMT-library
 <a href="https://snyk.io/test/github/lorengamboa/emt-bus">
 <img  src="https://snyk.io/test/github/lorengamboa/emt-bus/badge.svg"></a>
 
@@ -43,7 +43,7 @@ bus.getListLines({ Lines: '721', SelectDate: '09/09/1993' }).then ..
 <code>
 </code>
 
-### Bus Methods 🚌
+### 🚌 Bus Methods 
 
 |   Methods|Description |
 | ---------|-------------|
@@ -55,7 +55,7 @@ bus.getListLines({ Lines: '721', SelectDate: '09/09/1993' }).then ..
 | getTimeTableLines|Provices information about the requested line at travel time|
 | getTimesLines|Returns current schedules for the requested lines|
 
-### Geo Methods 🌍
+### 🌍 Geo Methods 
 
 |   Methods|Description |
 | ---------|-------------|
@@ -71,8 +71,33 @@ bus.getListLines({ Lines: '721', SelectDate: '09/09/1993' }).then ..
 | getStreet|Returns a list of EMT nodes related to a location. All EMT locations are a group of stops  within a target radius and the lines related to each stop in the list.|
 | getStreetFromXY|Returns a list of stops from a target coordinate.|
 
-### Media Methods 📺
+### 📺 Media Methods 
 
-### Bike Methods 🚲
+|   Methods|Description |
+| ---------|-------------|
+| getEstimatesIncident| Get estimate arrival time to stop and its related issues
+| getStreetRoute|Request up to three optimal routes from one place to another using bus or walking, source and destination must be in a format known for the system, which means that should have been validated by a GetStreet call   
+| getRouteWithAlarm| |
+| getRouteWithAlarmResponse| |
+| getRoute| |
+| getRouteResponse| |
 
-### Parking Methods 🅿
+### 🚲 Bike Methods 
+
+|   Methods|Description |
+| ---------|-------------|
+| getStations|Obtiene la relación de todas las bases de Bicimad y su estado operacional. |
+| getSingleStations|Obtiene la información de una base |
+
+### 🅿 Parking Methods 
+
+|   Methods|Description |
+| ---------|-------------|
+| detailParking|N/A |
+| detailPOI|N/A |
+| iconDescription|N/A|
+| infoParkingPoi|N/A|
+| listFeatures|N/A|
+| listParking|N/A|
+| listStreetPoisParking|N/A|
+| listTypesPOIs|N/A|

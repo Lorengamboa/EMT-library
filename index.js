@@ -16,7 +16,8 @@ const {
 	bus_endpoints,
 	geo_endpoints,
 	media_endpoints,
-	bike_endpoints
+	bike_endpoints,
+	parking_endpoints
 } = require('./config/endpoints');
 
 /**
@@ -32,7 +33,7 @@ module.exports = function emtService(clientId, passKey) {
 		if (service === 'geo') return new Geo(clientId, passKey, GEO, 'POST');
 		if (service === 'media') return new Media(clientId, passKey, MULTIMEDIA, 'POST');
 		if (service === 'bike') return new Bike(clientId, passKey, BIKE, 'GET');
-		if (service === 'parking') return;
+		if (service === 'parking') return new Park(clientId, passKey, 'POST');
 	};
 };
 
@@ -42,8 +43,8 @@ module.exports = function emtService(clientId, passKey) {
  * @param {string} passKey - Password to validate the client autentification
  */
 const Service = function (clientId, passKey, rest_method) {
-	var client = clientId; // private attribute
-	var pass = passKey; // private attribute
+	let client = clientId; // private attribute
+	let pass = passKey; // private attribute
 	this.rest_method = rest_method;
 
 	/** 
@@ -68,9 +69,7 @@ const Service = function (clientId, passKey, rest_method) {
 	 * Forms the entire domain for the desired request
 	 */
 	this.glueURL = function (endpoint, params) {
-		if (this.category !== BIKE) return `${BUS_DOMAIN}${this.category}/${endpoint}.php`;
-
-		return `${BIKE_DOMAIN}/${endpoint}/${this.getClient()}/${this.getPassword()}}`;
+		return `${BUS_DOMAIN}${this.category}/${endpoint}.php`;
 	};
 	/**
 	 * Forms the authentication credentials so it can be added to
@@ -108,9 +107,9 @@ Service.prototype.makeRequest = function (endpoint, params = {}) {
 		'gzip': true,
 		'strictSSL': false // Spain goverment sign their own SSL certificates, ಠ.ಠ
 	})
-	.then(response => {
-		return JSON.parse(response);
-	});
+		.then(response => {
+			return JSON.parse(response);
+		});
 };
 
 /**
@@ -315,7 +314,7 @@ Multimedia.prototype.getEstimatesIncident = function (params) {
  * source and destination must be in a format known for the system, which means that 
  * should have been validated by a GetStreet call
  */
-Multimedia.prototype.GetStreetRoute = function (params) {
+Multimedia.prototype.getStreetRoute = function (params) {
 	return this.makeRequest(media_endpoints.GET_STREET_ROUTE, params);
 };
 
@@ -354,6 +353,11 @@ Multimedia.prototype.getRouteResponse = function (params) {
 const Bike = function (clientId, passKey, category, rest_method) {
 	Service.call(this, clientId, passKey, rest_method);
 	this.category = category;
+
+	this.glueURL = function (endpoint, params) {
+		if (isNaN(params)) params = '';
+		return `${BIKE_DOMAIN}/${this.category}/${endpoint}/${this.getClient()}/${this.getPassword()}}/${params}`;
+	};
 };
 
 Bike.prototype = Object.create(Service.prototype); // inherits from service class
@@ -366,20 +370,101 @@ Bike.prototype.getStations = function () {
 	return this.makeRequest(bike_endpoints.GET_STATIONS);
 };
 /**
- * Obtiene la información de una base.
+ * Obtiene la información de una base
  */
 Bike.prototype.getSingleStations = function (baseId) {
 	return this.makeRequest(bike_endpoints.GET_SINGLE_STATION, baseId);
 };
 
-// Posible ws code responses
-const responses = {
-	0: 'PassKey OK and authorized for period',
-	1: 'No PassKey necesary',
-	2: 'PassKey distinct than the current Passkey',
-	3: 'PassKey expired',
-	4: 'Client unauthorized',
-	5: 'Client deactivate',
-	6: 'Client locked',
-	9: 'Attemp to Auth Failed'
-};
+/**
+ * Set of services that let's know the actual state and availability 
+ * for all the bikes located in Madrid
+ * 
+ * @param {string} clientId - client username to identify with
+ * @param {string} passKey - password to validate the client autentification
+ */
+const Park = function (clientId, passKey, rest_method) {
+	Service.call(this, clientId, passKey, rest_method);
+
+	this.glueURL = function (endpoint, params) {
+		let newURL = `${PARKING_DOMAIN}/${endpoint}/${this.getClient()},${this.getPassword()}`;
+		for(param in params) {
+			newURL += `,${param}`;
+		}
+		return newURL;
+	};
+}
+
+Park.prototype = Object.create(Service.prototype); // inherits from service class
+
+/**
+ * Obtiene la información detallada de un aparcamiento concreto: Información sobre sus
+ * accesos, horarios, tarifas, servicios que ofrece y cifras de ocupación.
+ */
+Park.prototype.detailParking = function () {
+	return this.makeRequest(parking_endpoints.DETAIL_PARKING);
+}
+/**
+ * Obtiene la información detallada de un POI concreto (o de todos ellos), con id, código de
+ * familia, nombre estándar, nombre traducido, descripción, web, horario, servicios de pago,
+ * así como sus imágenes asociadas con nombre, ruta y descripción. 
+ */
+Park.prototype.detailPOI = function () {
+	return this.makeRequest(parking_endpoints.DETAIL_POI);
+
+}
+/**
+ * Obtiene una lista de todos los elementos (características de aparcamientos, categorías de
+ * POIs,…) que tienen un icono asociado, con nombre, descripción si se dispone de ella, grupo al
+ * que pertenece y ruta del icono que la representa. 
+ */
+Park.prototype.iconDescription = function () {
+	return this.makeRequest(parking_endpoints.ICON_DESCRIPTION);
+
+}
+/**
+ * Obtiene información genérica de POIs y aparcamientos, independiente del idioma (dirección,
+ * coordenadas, códigos de familia, tipo y categoría,…). 
+ */
+Park.prototype.infoParkingPoi = function () {
+	return this.makeRequest(parking_endpoints.INFO_PARKING_POI);
+
+}
+/**
+ * Obtiene una lista de las características activas de los aparcamientos, con nombre, código y
+ * grupo de la característica, descripción si se dispone de ella y ruta del icono que la representa. 
+ */
+Park.prototype.listFeatures = function () {
+	return this.makeRequest(parking_endpoints.LIST_FEATURES);
+
+}
+/**
+ * Obtiene una lista de todos los aparcamientos activos, con su id, familia, nombre, categoría,
+ * tipo, dirección completa y coordenadas. 
+ * @param {*} language 
+ */
+Park.prototype.listParking = function (language) {
+	const body  = { language };
+	return this.makeRequest(parking_endpoints.LIST_PARKING, body);
+
+}
+/**
+ * Obtiene una lista de direcciones y POIs (aparcamientos incluidos) que coincidan total o
+ * parcialmente, con un texto pasado como parámetro. 
+ * @param {*} address 
+ * @param {*} language 
+ */
+Park.prototype.listStreetPoisParking = function (address, language) {
+	const body  = { address, language };
+	return this.makeRequest(parking_endpoints.LIST_STREET_POIS_PARKING, address, body);
+
+}
+/**
+ * Obtiene una lista de las familias, tipos y categorías de POIs activos en el sistema. 
+ * @param {*} language 
+ */
+Park.prototype.listTypesPOIs = function (language) {
+	const body  = { language };
+	return this.makeRequest(parking_endpoints.LIST_TYPES_POIS, body);
+
+}
