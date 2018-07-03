@@ -1,7 +1,7 @@
 'use strict';
 
 var assert = require('assert');
-var emt = require('../');
+var emt = require('../src');
 
 require('dotenv').config();
 
