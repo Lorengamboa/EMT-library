@@ -1,8 +1,10 @@
-"use strict";
+'use strict';
 
-const { PARKING_DOMAIN } = require("../config/url");
-const { parking_endpoints } = require("../config/endpoints");
-const Service = require("./ServiceInterface");
+const { PARKING_DOMAIN } = require('../config/url');
+const { parking_endpoints } = require('../config/endpoints');
+const Service = require('./ServiceInterface');
+
+const REST_METHOD = 'POST'; 
 
 /**
  * Set of services that let's know the actual state and availability
@@ -11,8 +13,8 @@ const Service = require("./ServiceInterface");
  * @param {string} clientId - client username to identify with
  * @param {string} passKey - password to validate the client autentification
  */
-const Parking = function(clientId, passKey, rest_method) {
-  Service.call(this, clientId, passKey, rest_method);
+const Parking = function(clientId, passKey) {
+  Service.call(this, clientId, passKey, REST_METHOD);
 
   this.glueURL = function(endpoint, params) {
     let newURL = `${PARKING_DOMAIN}/${endpoint}/${this.getClient()},${this.getPassword()}`;

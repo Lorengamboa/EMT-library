@@ -4,5 +4,6 @@ module.exports = {
     BUS: 'bus',
     GEO: 'geo',
     MULTIMEDIA: 'media',
-    BIKE: 'BiciMad'
+    BIKE: 'BiciMad',
+    PARKING: 'parking'
 }

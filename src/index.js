@@ -12,10 +12,20 @@ const SERVICE_CATEGORY = require('./config/category');
  */
 module.exports = function emtService(clientId, passKey) {
     return function typeService(service) {
-        if (service === 'bus') return new Bus(clientId, passKey, SERVICE_CATEGORY.BUS, 'POST');
-        if (service === 'geo') return new Geo(clientId, passKey, SERVICE_CATEGORY.GEO, 'POST');
-        if (service === 'media') return new Multimedia(clientId, passKey, SERVICE_CATEGORY.MULTIMEDIA, 'POST');
-        if (service === 'bike') return new Bike(clientId, passKey, SERVICE_CATEGORY.BIKE, 'GET');
-        if (service === 'parking') return new Parking(clientId, passKey, 'POST');
+        
+        if (service === SERVICE_CATEGORY.BUS) 
+            return new Bus(clientId, passKey, SERVICE_CATEGORY.BUS);
+
+        if (service === SERVICE_CATEGORY.GEO) 
+            return new Geo(clientId, passKey, SERVICE_CATEGORY.GEO);
+
+        if (service === SERVICE_CATEGORY.MULTIMEDIA) 
+            return new Multimedia(clientId, passKey, SERVICE_CATEGORY.MULTIMEDIA);
+
+        if (service === SERVICE_CATEGORY.BIKE) 
+            return new Bike(clientId, passKey, SERVICE_CATEGORY.BIKE);
+
+        if (service === SERVICE_CATEGORY.PARKING) 
+            return new Parking(clientId, passKey);
     };
 };

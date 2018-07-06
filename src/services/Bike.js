@@ -4,6 +4,8 @@ const { BIKE_DOMAIN } = require("../config/url");
 const { bike_endpoints } = require("../config/endpoints");
 const Service = require("./ServiceInterface");
 
+const REST_METHOD = "GET"; 
+
 /**
  * Set of services that let's know the actual state and availability
  * for all the bikes located in Madrid
@@ -11,8 +13,8 @@ const Service = require("./ServiceInterface");
  * @param {string} clientId - client username to identify with
  * @param {string} passKey - password to validate the client autentification
  */
-const Bike = function (clientId, passKey, category, rest_method) {
-	Service.call(this, clientId, passKey, rest_method);
+const Bike = function (clientId, passKey, category) {
+	Service.call(this, clientId, passKey, REST_METHOD);
 	this.category = category;
 
 	this.glueURL = function (endpoint, params) {

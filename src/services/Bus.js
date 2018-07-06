@@ -3,6 +3,8 @@
 const { bus_endpoints } = require("../config/endpoints");
 const Service = require("./ServiceInterface");
 
+const REST_METHOD = "POST"; 
+
 /**
  * Bus service that holds all it's methods to make accesible request and return a response
  * in JSON
@@ -11,8 +13,8 @@ const Service = require("./ServiceInterface");
  * @param {string} passKey - password to validate the client autentification
  * @param {string} category - It can either be bus or geo
  */
-const Bus = function(clientId, passKey, category, rest_method) {
-  Service.call(this, clientId, passKey, rest_method);
+const Bus = function(clientId, passKey, category) {
+  Service.call(this, clientId, passKey, REST_METHOD);
   this.category = category;
 };
 
