@@ -5,5 +5,5 @@ module.exports = {
     GEO: 'geo',
     MULTIMEDIA: 'media',
     BIKE: 'BiciMad',
-    PARKING: 'parking'
+    PARKING: 'park'
 }

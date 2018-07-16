@@ -1,9 +1,9 @@
 # EMT-library
+
+![Alt text](/assets/emt-bus_logo.png "Title")
+
 <a href="https://snyk.io/test/github/lorengamboa/emt-bus">
 <img  src="https://snyk.io/test/github/lorengamboa/emt-bus/badge.svg"></a>
-
-<a href="https://travis-ci.org/Lorengamboa/EMT-bus">
-<img  src="https://travis-ci.org/Lorengamboa/EMT-bus.svg?branch=master"></a>
 
 + Requirements
 + How to install
@@ -71,7 +71,7 @@ bus.getListLines({ Lines: '721', SelectDate: '09/09/1993' }).then ..
 | getStreet|Returns a list of EMT nodes related to a location. All EMT locations are a group of stops  within a target radius and the lines related to each stop in the list.|
 | getStreetFromXY|Returns a list of stops from a target coordinate.|
 
-### 📺 Media Methods 
+### 📺 Media Methods(WIP)
 
 |   Methods|Description |
 | ---------|-------------|
@@ -89,7 +89,7 @@ bus.getListLines({ Lines: '721', SelectDate: '09/09/1993' }).then ..
 | getStations|Obtiene la relación de todas las bases de Bicimad y su estado operacional. |
 | getSingleStations|Obtiene la información de una base |
 
-### 🅿 Parking Methods 
+### 🅿 Parking Methods (WIP)
 
 |   Methods|Description |
 | ---------|-------------|

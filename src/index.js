@@ -19,13 +19,13 @@ module.exports = function emtService(clientId, passKey) {
         if (service === SERVICE_CATEGORY.GEO) 
             return new Geo(clientId, passKey, SERVICE_CATEGORY.GEO);
 
-        if (service === SERVICE_CATEGORY.MULTIMEDIA) 
+        if (service === 'media') 
             return new Multimedia(clientId, passKey, SERVICE_CATEGORY.MULTIMEDIA);
 
-        if (service === SERVICE_CATEGORY.BIKE) 
+        if (service === 'bike') 
             return new Bike(clientId, passKey, SERVICE_CATEGORY.BIKE);
 
-        if (service === SERVICE_CATEGORY.PARKING) 
+        if (service === 'park') 
             return new Parking(clientId, passKey);
     };
 };

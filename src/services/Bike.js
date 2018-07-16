@@ -19,6 +19,7 @@ const Bike = function (clientId, passKey, category) {
 
 	this.glueURL = function (endpoint, params) {
 		if (isNaN(params)) params = "";
+
 		return `${BIKE_DOMAIN}/${
 			this.category
 			}/${endpoint}/${this.getClient()}/${this.getPassword()}}/${params}`;

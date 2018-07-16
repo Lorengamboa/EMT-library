@@ -17,10 +17,11 @@ const Parking = function(clientId, passKey) {
   Service.call(this, clientId, passKey, REST_METHOD);
 
   this.glueURL = function(endpoint, params) {
-    let newURL = `${PARKING_DOMAIN}/${endpoint}/${this.getClient()},${this.getPassword()}`;
+    let newURL = `${PARKING_DOMAIN}${endpoint}/${this.getClient()},${this.getPassword()}`;
     for (param in params) {
       newURL += `,${param}`;
     }
+    console.log(newURL)
     return newURL;
   };
 };
