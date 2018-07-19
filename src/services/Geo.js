@@ -59,8 +59,8 @@ Geo.prototype.getPointsOfInterestTypes = function(params) {
 /**
  * Returns a list of Point of interest types
  */
-Geo.prototype.getRoutesLineRoute = function(params) {
-  return this.makeRequest(geo_endpoints.GET_ROUTES_LINE_ROUTE, params);
+Geo.prototype.getRouteLineRoute = function(params) {
+  return this.makeRequest(geo_endpoints.GET_ROUTE_LINES_ROUTE, params);
 };
 /**
  * Returns a list of stops from a target stop with a target radius and the lines arriving to those stops.

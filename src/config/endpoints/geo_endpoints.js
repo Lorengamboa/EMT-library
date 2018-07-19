@@ -12,7 +12,7 @@ exports.GET_POINTS_OF_INTEREST = 'GetPointsOfInterest';
 
 exports.GET_POINTS_OF_INTEREST_TYPES = 'GetPointsOfInterestTypes';
 
-exports.GET_ROUTES_LINE_ROUTE = 'GetRouteLinesRoute';
+exports.GET_ROUTE_LINES_ROUTE = 'GetRouteLinesRoute';
 
 exports.GET_STOPS_FROM_STOP = 'GetStopsFromStop';
 
