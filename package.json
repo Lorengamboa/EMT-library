@@ -4,7 +4,9 @@
   "description": "Library that works a layer over the emt API service",
   "main": "src/index.js",
   "scripts": {
-    "test": "mocha ./test"
+    "test": "mocha ./test",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "keywords": [
     "library",
@@ -23,6 +25,8 @@
   "dependencies": {
     "dotenv": "^4.0.0",
     "request": "^2.83.0",
-    "request-promise": "^4.2.2"
-  }
+    "request-promise": "^4.2.2",
+    "snyk": "^1.316.1"
+  },
+  "snyk": true
 }
